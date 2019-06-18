@@ -40,5 +40,5 @@
   
   
 4.数据流走向图;
-
-    ![项目数据流走向](https://github.com/breaklinux/devops-bmc-api/blob/master/img/ansibleApi.png)
+![项目数据流走向](https://github.com/breaklinux/devops-bmc-api/blob/master/img/devops-bmc-api.jpg)
+    
