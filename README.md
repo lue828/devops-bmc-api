@@ -18,11 +18,11 @@
    
    (2).安装项目依赖包pip方式;  
    
-   /usr/local/bin/pip3.6 install --upgrade pip
-   /usr/local/bin/pip3.6 install --upgrade setuptools
-   /usr/local/bin/pip3.6 install requests
-   /usr/local/bin/pip3.6 install Jinja2==2.10
-   /usr/local/bin/pip3.6 install flask-sqlalchemy
+   /usr/local/bin/pip3.6 install --upgrade pip  
+   /usr/local/bin/pip3.6 install --upgrade setuptools  
+   /usr/local/bin/pip3.6 install requests  
+   /usr/local/bin/pip3.6 install Jinja2==2.10  
+   /usr/local/bin/pip3.6 install flask-sqlalchemy  
    /usr/local/bin/pip3.6 install ansible
    /usr/local/bin/pip3.6 install PyMySQL==0.9.3
    /usr/local/bin/pip3.6 install gevent
