@@ -26,15 +26,15 @@
    /usr/local/bin/pip3.6 install ansible  
    /usr/local/bin/pip3.6 install PyMySQL==0.9.3  
    /usr/local/bin/pip3.6 install gevent  
-   /usr/local/bin/pip3.6/flask==1.0.2  
-    /usr/local/bin/pip3.6/request==1.0.2  
-    /usr/local/bin/pip3.6/Jinja2==2.10  
-    /usr/local/bin/pip3.6/Flask-Cors==3.0.6  
-    /usr/local/bin/pip3.6/flask-sqlalchemy  
-    /usr/local/bin/pip3.6/flask_restful  
-    /usr/local/bin/pip3.6/jsonify  
-    /usr/local/bin/pip3.6/ansible  
-    /usr/local/bin/pip3.6/MySQL-python    
+   /usr/local/bin/pip3.6 install flask==1.0.2  
+    /usr/local/bin/pip3.6 install request==1.0.2  
+    /usr/local/bin/pip3.6 install Jinja2==2.10  
+    /usr/local/bin/pip3.6 install Flask-Cors==3.0.6  
+    /usr/local/bin/pip3.6 install flask-sqlalchemy  
+    /usr/local/bin/pip3.6 install flask_restful  
+    /usr/local/bin/pip3.6 install jsonify  
+    /usr/local/bin/pip3.6 install ansible  
+    /usr/local/bin/pip3.6 install MySQL-python    
     
 3.接口文档介绍;  
 (1).ansible动态主机接口;  
