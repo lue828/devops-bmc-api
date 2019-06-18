@@ -36,8 +36,58 @@
     /usr/local/bin/pip3.6/ansible  
     /usr/local/bin/pip3.6/MySQL-python    
     
-3.接口文档介绍;
+3.接口文档介绍;  
+(1).ansible动态主机接口;
+**devops-bmc-api 接口文档：** 
+
+- 增加ansible 动态主机
+
+**请求URL：** 
+- ` http://devops-bmc-api.com/ansible/host/v1 `
   
+**请求方式：**
+- POST  
+
+**格式：**  
+- JSON  
+
+**参数：** 
+
+|参数   |必填   |类型   |说明   |
+| ------------  | ------------ | ------------ | ------------ |
+| instanceip    |是   |str   |执行端合法ip地址, 默认值:None,支持多个ip地址添加","隔开".
+| username      |是   |str   |系统登录账号名称，参数ansible项目未使用
+| password      |是   |str   |系统登录密码名称，参数ansible项目未使用
+| port          |是   |str   |系统登录远程ssh端口，默认值22端口
+| group         |是   |str   |系统机器分组，建议跟进环境维度进行分组(dev,test,ontest,prod)进行.
+
+
+ **请求示例**
+```
+{
+	 "instanceip":"192.168.77.111,192.168.77.112",
+	 "username":"ops",
+	 "password":"ops",
+	 "port":"22",
+	 "group":"test"
+}
+```
+ **返回参数**
+```
+{
+    "code": 0,
+    "data": "Insert Success"
+}
+```
+
+ **备注** 
+
+- code状态码描述
+  0 表示系统正常响应;
+  1 表示系统内部出现问题;
+
+
+
   
 4.数据流走向图;
 ![项目数据流走向](https://github.com/breaklinux/devops-bmc-api/blob/master/img/devops-bmc-api.jpg)
