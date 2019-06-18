@@ -155,7 +155,7 @@ def ansibleInsterHost():
                 db.session.add(ansibleHostDataInsert)
                 db.session.commit()
             msg = "Insert Success"
-            return Response(json.dumps({"code": 1, "data": msg}), mimetype='application/json')
+            return Response(json.dumps({"code": 0, "data": msg}), mimetype='application/json')
         else:
             data = "参数缺少,不允许添加"
             return Response(json.dumps({"code": 1, "data": data}), mimetype='application/json')
