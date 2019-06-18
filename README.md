@@ -244,5 +244,12 @@ http://devops-bmc-api.com/ansible/api/v1
 
 
 4.数据流走向图;
-![项目数据流走向](https://github.com/breaklinux/devops-bmc-api/blob/master/img/devops-bmc-api.jpg)
-    
+![项目数据流走向](https://github.com/breaklinux/devops-bmc-api/blob/master/img/devops-bmc-api.jpg)  
+
+5.参考文档;  
+1.https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html  ansible api 参考地址  
+2.https://flask-sqlalchemy.palletsprojects.com/en/2.x/  flask-sqlalchemy 参考地址;  
+3.http://docs.jinkan.org/docs/flask/  flask 官网  
+
+
+
