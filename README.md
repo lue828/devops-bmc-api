@@ -37,7 +37,8 @@
     /usr/local/bin/pip3.6/MySQL-python    
     
 3.接口文档介绍;  
-(1).ansible动态主机接口;
+(1).ansible动态主机接口;  
+
 **devops-bmc-api 接口文档：** 
 
 - 增加ansible 动态主机
@@ -65,7 +66,7 @@
  **请求示例**
 ```
 {
-	 "instanceip":"192.168.77.111,192.168.77.112",
+	 "instanceip":"192.168.77.111,192.168.77.112,192.168.76.111,192.168.79.112",
 	 "username":"ops",
 	 "password":"ops",
 	 "port":"22",
@@ -84,11 +85,76 @@
 
 - code状态码描述
   0 表示系统正常响应;
-  1 表示系统内部出现问题;
+  1 表示系统内部出现问题;  
+ 
+- 查询 ansible 动态主机列表
 
-
-
+**请求URL：** 
+- ` http://devops-bmc-api.com/ansible/host/v1 `
   
+**请求方式：**
+- GET  
+
+**格式：**  
+- JSON  
+**请求参数**  
+http://devops-bmc-api.com/ansible/host/v1  
+
+ **返回参数**
+```
+{
+"code": 0,
+"total": 4,
+"data": [
+{
+"id": 5,
+"host": "192.168.77.111",
+"username": "ops",
+"password": "ops",
+"port": "22",
+"group": "testone"
+},
+{
+"id": 7,
+"host": "192.168.77.112",
+"username": "ops",
+"password": "ops",
+"port": "22",
+"group": "testone"
+},
+{
+"id": 8,
+"host": "192.168.76.111",
+"username": "ops",
+"password": "ops",
+"port": "22",
+"group": "testone"
+},
+{
+"id": 9,
+"host": "192.168.79.112",
+"username": "ops",
+"password": "ops",
+"port": "22",
+"group": "testone"
+}
+]
+}
+```
+
+ **备注** 
+
+- code状态码描述
+  0 表示系统正常响应;
+  1 表示系统内部出现问题;  
+  
+  
+  
+(2).ansible 执行接口;  
+
+
+
+
 4.数据流走向图;
 ![项目数据流走向](https://github.com/breaklinux/devops-bmc-api/blob/master/img/devops-bmc-api.jpg)
     
