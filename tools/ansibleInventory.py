@@ -51,7 +51,7 @@ def HostApi():
 
 if __name__ == "__main__":
     from optparse import OptionParser
-    getInventoryUrl = "http://change-dev-environment.chj.cloud/ansible/host/v1"
+    getInventoryUrl = "http://devops-bmc-api.com/ansible/host/v1"  ###获取动态主机接口###
     parse = OptionParser()
     parse.add_option("-l", "--list", action="store_true", dest="list", default=False)
     (option, arges) = parse.parse_args()
