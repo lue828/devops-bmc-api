@@ -33,7 +33,7 @@ def getHostInventoryData(url):
     return json.dumps(data, indent=5)
 
 def HostApi():
-    getInventoryUrl = "http://change-dev-environment.chj.cloud/ansible/host/v1"
+    getInventoryUrl = "http://devops-bmc-api.com/ansible/host/v1"
     import json
     import configparser
     data = json.loads(getHostInventoryData(getInventoryUrl))
