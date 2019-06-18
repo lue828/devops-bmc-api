@@ -87,7 +87,7 @@
   0 表示系统正常响应;
   1 表示系统内部出现问题;  
  
-- 查询 ansible 动态主机列表
+**查询 ansible 动态主机列表: **
 
 **请求URL：** 
 - ` http://devops-bmc-api.com/ansible/host/v1 `
@@ -112,7 +112,7 @@ http://devops-bmc-api.com/ansible/host/v1
 "username": "ops",
 "password": "ops",
 "port": "22",
-"group": "testone"
+"group": "test"
 },
 {
 "id": 7,
@@ -120,7 +120,7 @@ http://devops-bmc-api.com/ansible/host/v1
 "username": "ops",
 "password": "ops",
 "port": "22",
-"group": "testone"
+"group": "test"
 },
 {
 "id": 8,
@@ -128,7 +128,7 @@ http://devops-bmc-api.com/ansible/host/v1
 "username": "ops",
 "password": "ops",
 "port": "22",
-"group": "testone"
+"group": "test"
 },
 {
 "id": 9,
@@ -136,7 +136,7 @@ http://devops-bmc-api.com/ansible/host/v1
 "username": "ops",
 "password": "ops",
 "port": "22",
-"group": "testone"
+"group": "test"
 }
 ]
 }
@@ -150,9 +150,97 @@ http://devops-bmc-api.com/ansible/host/v1
   
   
   
-(2).ansible 执行接口;  
+  
+**2.ansible 执行接口**
+
+**请求URL：** 
+- ` http://devops-bmc-api.com/ansible/api/v1 `
+  
+**请求方式：**
+- POST  
+
+**格式：**  
+- JSON  
+
+**参数：** 
+
+|参数   |必填   |类型   |说明   |
+| ------------  | ------------ | ------------ | ------------ |
+| instance_ip    |是   |str   |执行端合法ip地址,机器必须属于通过动态主机接口录入或者数据库新增数据; 默认值:None
+| command   |是   |str   |ansible 支持模块名称如:（shell,comand,copy）;默认值:None
+| args      |是   |str   |执行系统命令和参数,默认值:None
 
 
+ **请求示例**
+```
+{
+	 "instance_ip":"192.168.76.111",
+	 "command":"shell",
+	 "args":"ls -l"
+}
+```
+ **返回参数**
+```
+{
+    "code": 0,
+    "data": {
+        "success": [
+            {
+                "192.168.76.111": {
+                    "status": true,
+                    "messages": "总用量 9332\n-rw-r--r--. 1 root root 9547891 5月  25 2018 telegraf-1.6.2-1.x86_64.rpm\n-rw-rw-r--. 1 ops  ops       78 4月  11 22:37 zookeeper.out"
+                }
+            }
+        ],
+        "failed": [],
+        "unreachable": []
+    }
+}
+```
+
+ **备注** 
+
+- code状态码描述
+  0 表示系统正常响应;
+  1 表示系统内部出现问题;  
+ 
+- 查询 ansible 执行结果
+
+**请求URL：** 
+- ` http://devops-bmc-api.com/ansible/api/v1 `
+  
+**请求方式：**
+- GET  
+
+**格式：**  
+- JSON  
+**请求参数**  
+http://devops-bmc-api.com/ansible/api/v1  
+
+ **返回参数**
+```
+{
+"code": 0,
+"total": 1,
+"data": [
+{
+"id": 1,
+"run_ip": "192.168.76.111",
+"command_name": "shell",
+"run_agrs": "date",
+"ansible_callback": "{\"success\": [{\"192.168.76.111\": {\"status\": true, \"messages\": \"2019年 06月 18日 星期二 14:53:39 CST\"}}], \"failed\": [], \"unreachable\": []}"
+}
+]
+}
+```
+
+ **备注** 
+
+- code状态码描述
+  0 表示系统正常响应;
+  1 表示系统内部出现问题;  
+  
+ 
 
 
 4.数据流走向图;
