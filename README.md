@@ -6,8 +6,8 @@
   -|-|-
   Python3.6     |Centos 7.2 | tools 数据库相关配置和ansible 动态主机
   Flask1.0.2    |3.10.0-862.6.3.el7.x86_64  |boot.py flask 程序启动入口文件
-  Ansible2.7.7  |           |  |ansibleManage ansibleApi核心管理功能模块
-  MYSQL5.6.0    |           |  |    
+  Ansible2.7.7  |           | ansibleManage ansibleApi核心管理功能模块
+  MYSQL5.6.0    |           |    
 
 
 2.项目系统依赖包安装;
