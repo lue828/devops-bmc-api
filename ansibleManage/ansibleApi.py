@@ -14,6 +14,7 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
 from ansible.vars.manager import VariableManager
+from ansible.errors import AnsibleParserError
 
 
 class ResultCallback(CallbackBase):
@@ -39,13 +40,14 @@ class ResultCallback(CallbackBase):
 
 class AnsibleApi(object):
 
-    def __init__(self, resource, user, becomeuser, *args, **kwargs):
+    def __init__(self, resource, user, becomeuser, playvars={}, *args, **kwargs):
         # type: (object, object, object, object) -> object
         # type: (object, object, object, object) -> object
         self._resource = resource
         self._user = user
         self._becomeuser = becomeuser
         self.inventory = None
+        self.playvars = playvars  # add
         self.variable_manager = None
         self.loader = None
         self.options = None
@@ -72,11 +74,16 @@ class AnsibleApi(object):
         self.loader = DataLoader()
         self.passwords = dict(sshpass=None, becomepass=None)
         self.inventory = InventoryManager(loader=self.loader, sources=self._resource)
+        # self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
+
         self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
+        self.variable_manager.extra_vars = self.playvars
+        # self.variable_manager.set_inventory(self.inventory)  ##add
+        # self.variable_manager.extra_vars = self.myvars  ##add
 
     def run(self, host_list, module_name, module_args, ):
         play_source = dict(
-            name="Ansible Play For by At 20190104",
+            name="Ansible Play For Chj By Chenjl At 20190104",
             hosts=host_list,
             gather_facts='no',
             tasks=[
@@ -104,15 +111,27 @@ class AnsibleApi(object):
         finally:
             if tqm is not None:
                 tqm.cleanup()
+            ###########ansible task Remove ansible tmpdir
+            # shutil.rmtree(C.DEFAULT_LOCAL_TMP, True)
+
     def playbookRun(self, playbook_path):
         from ansible.executor.playbook_executor import PlaybookExecutor
+
         playbook = PlaybookExecutor(playbooks=playbook_path,
                                     inventory=self.inventory,
                                     variable_manager=self.variable_manager,
                                     loader=self.loader,
                                     options=self.options,
                                     passwords=self.passwords)
-        return playbook.run()
+
+        self.callback = ResultCallback()
+        playbook._tqm._stdout_callback = self.callback
+        try:
+            result = playbook.run()
+        except AnsibleParserError:
+            code = 1001
+            results = {'playbook': playbook_path, 'msg': playbook_path + 'playbook have syntax error', 'flag': False}
+            return code, results
 
     def get_result(self):
         self.results_raw = {'success': {}, 'failed': {}, 'unreachable': {}}
@@ -124,9 +143,10 @@ class AnsibleApi(object):
 
         for host, result in self.callback.host_unreachable.items():
             self.results_raw['unreachable'][host] = result._result['msg']
+
         return self.results_raw
 
-   
+
     def get_result_v2(self):
         self.results_raw = {'success': list(), 'failed': {}, 'unreachable': {}}
 
@@ -140,7 +160,6 @@ class AnsibleApi(object):
             self.results_raw['unreachable'] = {"ip": host, "result": result._result['msg']}
         return self.results_raw
 
-    
-    
+
 if __name__ == "__main__":
-    print("Ansible Api By lijx 20190104 Ansible Version: 2.7.5  Test Ok")
+    print("Ansible Api By  20190104 Ansible Version: 2.7.5  Test Ok")
