@@ -15,11 +15,12 @@ HOME_DIR = os.path.split(os.path.split(HERE)[0])[0]
 script_path = os.path.join(HOME_DIR, "tools")
 os.sys.path.append(script_path)
 from tools.ansibleInventory import HostApi
-
+from tools.auth import Check
 ansibleUrl = Blueprint('ansible', __name__)
 
 
 @ansibleUrl.route('/api/v1', methods=['GET', 'POST'])
+@Check
 def ansibleRun():
     import json
     from tools.bmc_log import bmcLogInster
@@ -55,7 +56,46 @@ def ansibleRun():
         parameterInfo = "参数错误,请检查"
         return Response(json.dumps({"code": 1, "data": parameterInfo}), mimetype='application/json')
 
+@Check
+@ansibleUrl.route('/api/v2', methods=['GET', 'POST'])
+def ansibleRun_v2():
+    import json
+    from tools.bmc_log import bmcLogInster
+    from ansibleManage.ansibleApi import AnsibleApi
+    if request.method == "GET":
+        return ansibleSelect()
+    elif request.method == "POST":
+        Data = request.get_json()
+        inenory_ip = Data.get('instance_ip', None)
+        command = Data.get('command', None)
+        args = Data.get('args', None)
+        becomeUser = Data.get("user", "root")
+        # inenory_ops = ansibelBase(becomeUser, "ops")
+        if inenory_ip:
 
+            t = HostApi()
+            Ansible_run = AnsibleApi(script_path + "/static_hosts", "ops", becomeUser)
+            Ansible_run.run(inenory_ip, command, args)
+            reults = Ansible_run.get_result_v2()
+
+            # reults = inenory_ops.Performer_Ansible(inenory_ip, command, args)
+            if command == "shell":
+                reults = ansibleCallbackFilter_v2(reults)
+
+            if ansibleInsert(inenory_ip, command, args, json.dumps(reults)):
+                print("成功")
+            else:
+                print("失败")
+            bmcLogInster("ansibleRun", request, reults)
+            return Response(json.dumps({"code": 0, "data": reults}), mimetype='application/json')
+    elif request.method == "DELETE":
+        pass
+
+    else:
+        parameterInfo = "参数错误,请检查"
+        return Response(json.dumps({"code": 1, "data": parameterInfo}), mimetype='application/json')
+    
+    
 @ansibleUrl.route('/module/v1', methods=['GET', 'POST'])
 def ansibleModule():
     instanceModule = ansibelBase()
@@ -96,6 +136,16 @@ def ansibleCallbackFilter(callback):
                 callbackData[i].append({x: {"status": True, "messages": callback[i][x]}})
     return callbackData
 
+
+def ansibleCallbackFilter_v2(callback):
+    callbackData = dict()
+    for i in callback:
+        callbackData[i] = list()
+        for x in callback[i]:
+            callbackData[i].append({"status": x["result"]["changed"],
+                                    "messages": x["result"]["stdout"] or x["result"]["stderr"],
+                                    "ip": x["ip"]})
+    return callbackData
 
 class ansibelBase(object):
     def Ansible_module(self):
