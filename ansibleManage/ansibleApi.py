@@ -124,9 +124,23 @@ class AnsibleApi(object):
 
         for host, result in self.callback.host_unreachable.items():
             self.results_raw['unreachable'][host] = result._result['msg']
-
         return self.results_raw
 
+   
+    def get_result_v2(self):
+        self.results_raw = {'success': list(), 'failed': {}, 'unreachable': {}}
 
+        for host, result in self.callback.host_ok.items():
+            self.results_raw['success'].append({"ip": host, "result": result._result})
+
+        for host, result in self.callback.host_failed.items():
+            self.results_raw['failed'] = {"ip": host, "result": result._result}
+
+        for host, result in self.callback.host_unreachable.items():
+            self.results_raw['unreachable'] = {"ip": host, "result": result._result['msg']}
+        return self.results_raw
+
+    
+    
 if __name__ == "__main__":
     print("Ansible Api By lijx 20190104 Ansible Version: 2.7.5  Test Ok")
