@@ -68,4 +68,4 @@ class bmc_ansible_hosts(db.Model):
 
     def to_dict(self):
         return {"id": self.id, "host": self.host, "username": self.username, "password": self.password,
-                "port": self.port, "group": self.group}
+                "port": self.port, "group": self.group,"createtime": str(self.cratetime)}
