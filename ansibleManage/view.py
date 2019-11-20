@@ -99,8 +99,9 @@ def ansibleRun_v2():
 @ansibleUrl.route('/module/v1', methods=['GET', 'POST'])
 def ansibleModule():
     instanceModule = ansibelBase()
-    data = instanceModule.Ansible_module()
+    data = instanceModule.Ansible_env()
     return Response(data, mimetype='application/json')
+
 
 
 def ansibleInsert(ip, command, args, callback):
@@ -156,9 +157,18 @@ class ansibelBase(object):
         Service_list = ["service"]
         return json.dumps({"code": 0, "data": dict(Command=Commands_list, File=File_list, Package=Pckaging_list,
                                                    Service=Service_list)})
+    def Ansible_env(self):
+        import json
+        key = ["dev","test","ontest","prod"]
+        display_name=["开发环境","测试环境","预发布环境","生产环境"]
+        D = dict(zip(key, display_name))
+        return json.dumps({"code": 0, "data":[{"key": x, "display_name": D[x]} for x in D]})
 
 
-@ansibleUrl.route('/host/v1', methods=['GET', 'POST'])
+""""
+1.ansible主机管理入口方法;
+"""
+@ansibleUrl.route('/host/v1', methods=['GET', 'POST','DELETE','PUT'])
 def ansibleHostRun():
     try:
         if request.method == "GET":
@@ -166,7 +176,9 @@ def ansibleHostRun():
         elif request.method == "POST":
             return ansibleInsterHost()
         elif request.method == "DELETE":
-            pass
+            return hostDelete()
+        elif request.method == "PUT":
+            return updateHost()
         else:
             data = "方法不存在"
             return data
@@ -174,20 +186,59 @@ def ansibleHostRun():
         print(e)
 
 
+"""
+1.ansible 查询内部动态主机机器方法;
+2.数据库查询
+"""
 def ansibleHostSelect():
     import json
-    from models import bmc_ansible_hosts
-    queryData = bmc_ansible_hosts.query.all()
+    from models import bmchost
+    queryData = bmchost.query.all()
+    print(queryData)
     return Response(
         json.dumps({"code": 0, "total": len(queryData), "data": [i.to_dict() for i in queryData]}, ),
         mimetype='application/json')
+"""
+1.删除主机ip地址
+"""
 
+def updateHost():
+    import json
+    try:
+        Data = request.get_json()
+        id = Data.get("id")
+        host_ip = Data.get('instanceip', None)
+        username = Data.get('username', None)
+        password = Data.get('password', None)
+        port = Data.get('port', None)
+        group = Data.get("group")
+        print(Data)
+        data = ansibleUpdateHost(host_ip,username,password,port,group,id)
+    except Exception as e:
+        data = {"code": 500, "data": "必传参数不能为空", "message": str(e)}
+    return Response(json.dumps(data), mimetype='application/json')
 
+def hostDelete():
+    import json
+    try:
+      Data = request.get_json()
+      hostId = Data.get('id', None)
+      data = anisbleDeleteHost(hostId)
+      return Response(json.dumps(data), mimetype='application/json')
+    except Exception as e:
+        msg="参数不匹配"
+    return Response(json.dumps({"code": 1, "message":msg}),
+        mimetype='application/json')
+
+""""
+1.ansible 自管机器地址插入方法
+2.支持多个IP地址进行插入;
+"""
 def ansibleInsterHost():
     import json
     from flask import Response
     from models import db
-    from models import bmc_ansible_hosts
+    from models import bmchost
     import datetime
     Data = request.get_json()
     host_ip = Data.get('instanceip', None)
@@ -195,20 +246,58 @@ def ansibleInsterHost():
     password = Data.get('password', None)
     port = Data.get('port', None)
     group = Data.get("group")
+    print(Data)
     create_time = datetime.datetime.now()
     try:
+
         if host_ip and group and port and username and password:
             ip = host_ip.split(',');
             for i in ip:
-                ansibleHostDataInsert = bmc_ansible_hosts(host=i, username=username, password=password, port=port,
-                                                          group=group, createtime=create_time)
+                ansibleHostDataInsert = bmchost(instanceip=i, username=username, password=password, port=port,
+                                                group=group, cratetime=create_time)
                 db.session.add(ansibleHostDataInsert)
                 db.session.commit()
             msg = "Insert Success"
-            return Response(json.dumps({"code": 0, "data": msg}), mimetype='application/json')
+            return Response(json.dumps({"code": 1, "data": msg}), mimetype='application/json')
         else:
             data = "参数缺少,不允许添加"
             return Response(json.dumps({"code": 1, "data": data}), mimetype='application/json')
     except Exception  as e:
         print(e)
         return Response(json.dumps({"code": 1, "data": "error"}), mimetype='application/json')
+"""
+1.ansible host机器删除
+"""
+
+def anisbleDeleteHost(IPID):
+    from models import db
+    from models import bmchost
+    try:
+        deleteData = bmchost.query.get(IPID)
+        db.session.delete(deleteData)
+        db.session.commit()
+        data = "删除成功"
+    except Exception as e:
+        data = {"code": 1, "data": "删除主机失败", "message": str(e)}
+    return {"code": 0, "data": data, "message": "success"}
+
+"""
+1.ansible host 更新
+"""
+def ansibleUpdateHost(host,username,password,port,group,id):
+    from models import db
+    from models import bmchost
+    import datetime
+    create_time = datetime.datetime.now()
+
+    print(create_time)
+    try:
+        bmchost.query.filter_by(id=id).update({"instanceip":host , "username": username,
+                                               "password": password,"port":port,
+                                               "group":group})
+        msg = "Update Success"
+        db.session.commit()
+        return {"code": 0,  "message": msg}
+    except Exception as e:
+        print(e)
+        return {"code": 1, "data": None, "message": str(e)}
