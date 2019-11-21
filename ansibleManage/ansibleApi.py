@@ -148,16 +148,16 @@ class AnsibleApi(object):
 
 
     def get_result_v2(self):
-        self.results_raw = {'success': list(), 'failed': {}, 'unreachable': {}}
+        self.results_raw = {'success': list(), 'failed': list(), 'unreachable': list()}
 
         for host, result in self.callback.host_ok.items():
             self.results_raw['success'].append({"ip": host, "result": result._result})
 
         for host, result in self.callback.host_failed.items():
-            self.results_raw['failed'] = {"ip": host, "result": result._result}
+            self.results_raw['failed'].append({"ip": host, "result": result._result})
 
         for host, result in self.callback.host_unreachable.items():
-            self.results_raw['unreachable'] = {"ip": host, "result": result._result['msg']}
+            self.results_raw['unreachable'].append({"ip": host, "result": result._result['msg']})
         return self.results_raw
 
 
