@@ -38,3 +38,9 @@ WhilteUuidField = [
 ]   
     
     
+
+DynamicHostHeader=[
+    {"name":"id","alias":"唯一标识"},{"name":"instanceip","alias":"主机IP"},
+    {"name":"password","alias":"密码"},{"name":"username","alias":"用户"},
+    {"name":"port","alias":"端口"},{"name":"group","alias":"主机组"},
+    {"name":"createtime","alias":"创建时间"}]
