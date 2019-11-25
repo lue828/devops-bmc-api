@@ -193,10 +193,11 @@ def ansibleHostRun():
 def ansibleHostSelect():
     import json
     from models import bmchost
+     from tools.config import DynamicHostHeader
     queryData = bmchost.query.all()
     print(queryData)
     return Response(
-        json.dumps({"code": 0, "total": len(queryData), "data": [i.to_dict() for i in queryData]}, ),
+        json.dumps({"code": 0, "total": len(queryData), "data": [i.to_dict() for i in queryData],"columns":DynamicHostHeader,}, ),
         mimetype='application/json')
 """
 1.删除主机ip地址
