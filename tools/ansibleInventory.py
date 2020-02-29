@@ -33,7 +33,7 @@ def getHostInventoryData(url):
     return json.dumps(data, indent=5)
 
 def HostApi():
-    getInventoryUrl = "http://devops-bmc-api.com/ansible/host/v1"
+    getInventoryUrl = "http://192.168.58.14:5000/ansible/host/v1"
     import json
     import configparser
     data = json.loads(getHostInventoryData(getInventoryUrl))
@@ -44,14 +44,14 @@ def HostApi():
             config.add_section(i)
             for h in data[i]["hosts"]:
                 config.set(i, h)
-            config.write(open("%s/inventory_static_hosts"%script_path, "w"))
+            config.write(open("%s/static_hosts"%script_path, "w"))
     return True
 
 
 
 if __name__ == "__main__":
     from optparse import OptionParser
-    getInventoryUrl = "http://devops-bmc-api.com/ansible/host/v1"  ###获取动态主机接口###
+    getInventoryUrl = "http://192.168.58.14:5000/ansible/host/v1"  ###获取动态主机接口###
     parse = OptionParser()
     parse.add_option("-l", "--list", action="store_true", dest="list", default=False)
     (option, arges) = parse.parse_args()

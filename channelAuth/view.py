@@ -58,10 +58,12 @@ def anisbleAddUuidChannel(desc, owner, uuid_use, id=None):
         if id:
            channel.query.filter_by(id=id).update({"desc": desc, "owner": owner, "uuid_use": uuid_use})
            msg = "Update Success"
+           data = "true"
         else:
             channelDataInsert = channel(desc=desc, owner=owner, uuid=uuid, uuid_use=uuid_use)
             db.session.add(channelDataInsert)
-        data = """你申请{},认证ID: {}""".format(uuid_use, uuid)
+            data = """你申请{},认证ID: {}""".format(uuid_use, uuid)
+            msg = "Insert Success"
         db.session.commit()
         return {"code": 0, "data": data, "message": msg}
     except Exception as e:
@@ -153,11 +155,12 @@ def anisbleAddIpChannel(ipadress, desc, owner, id=None):
         if id:
             ipwhilt.query.filter_by(id=id).update({"desc":desc, "owner": owner, "ip": ipadress})
             msg = "Update Success"
+            data= "true"
         else:
             channelIpDataInsert = ipwhilt(desc=desc, owner=owner, ip=ipadress)
             db.session.add(channelIpDataInsert)
             msg = "Insert Success"
-        data = """申请人{},授权IP地址: {}""".format(owner, ipadress)
+            data = """申请人{},授权IP地址: {}""".format(owner, ipadress)
         db.session.commit()
         return {"code": 0, "data": data, "message": msg}
     except Exception as e:
@@ -169,7 +172,6 @@ def ansibleSelectChannelIpRun():
     import json
     from models import ipwhilt
     from tools.config import ChanneIpHeader, WhilteIpField
-    #t = request.GET.get("opsAdminForm")
     if "opsAdminForm" in request.args:
         return Response(json.dumps({"code": 0, "data": WhilteIpField}), mimetype="application/json")
     else:

@@ -192,9 +192,9 @@ def ansibleHostRun():
 """
 def ansibleHostSelect():
     import json
-    from models import bmchost
+    from models import bmc_ansible_hosts
     from tools.config import DynamicHostHeader
-    queryData = bmchost.query.all()
+    queryData = bmc_ansible_hosts.query.all()
     print(queryData)
     return Response(
         json.dumps({"code": 0, "total": len(queryData), "data": [i.to_dict() for i in queryData],"columns":DynamicHostHeader,}, ),
@@ -213,7 +213,6 @@ def updateHost():
         password = Data.get('password', None)
         port = Data.get('port', None)
         group = Data.get("group")
-        print(Data)
         data = ansibleUpdateHost(host_ip,username,password,port,group,id)
     except Exception as e:
         data = {"code": 500, "data": "必传参数不能为空", "message": str(e)}
@@ -239,7 +238,7 @@ def ansibleInsterHost():
     import json
     from flask import Response
     from models import db
-    from models import bmchost
+    from models import bmc_ansible_hosts
     import datetime
     Data = request.get_json()
     host_ip = Data.get('instanceip', None)
@@ -247,15 +246,14 @@ def ansibleInsterHost():
     password = Data.get('password', None)
     port = Data.get('port', None)
     group = Data.get("group")
-    print(Data)
     create_time = datetime.datetime.now()
     try:
 
         if host_ip and group and port and username and password:
             ip = host_ip.split(',');
             for i in ip:
-                ansibleHostDataInsert = bmchost(instanceip=i, username=username, password=password, port=port,
-                                                group=group, cratetime=create_time)
+                ansibleHostDataInsert = bmc_ansible_hosts(instanceip=i, username=username, password=password, port=port,
+                                                group=group,createtime=create_time)
                 db.session.add(ansibleHostDataInsert)
                 db.session.commit()
             msg = "Insert Success"
@@ -272,9 +270,9 @@ def ansibleInsterHost():
 
 def anisbleDeleteHost(IPID):
     from models import db
-    from models import bmchost
+    from models import bmc_ansible_hosts
     try:
-        deleteData = bmchost.query.get(IPID)
+        deleteData = bmc_ansible_hosts.query.get(IPID)
         db.session.delete(deleteData)
         db.session.commit()
         data = "删除成功"
@@ -287,13 +285,12 @@ def anisbleDeleteHost(IPID):
 """
 def ansibleUpdateHost(host,username,password,port,group,id):
     from models import db
-    from models import bmchost
+    from models import bmc_ansible_hosts
     import datetime
     create_time = datetime.datetime.now()
 
-    print(create_time)
     try:
-        bmchost.query.filter_by(id=id).update({"instanceip":host , "username": username,
+        bmc_ansible_hosts.query.filter_by(id=id).update({"instanceip":host , "username": username,
                                                "password": password,"port":port,
                                                "group":group})
         msg = "Update Success"

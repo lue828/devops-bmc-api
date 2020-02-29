@@ -71,7 +71,7 @@ class channel(db.Model):  ########认证code##########
 class bmc_ansible_hosts(db.Model):
     __tablename__ = 'bmc_ansible_hosts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 主键自增长
-    host = db.Column(db.String(16), nullable=False)  ###不能为空
+    instanceip = db.Column(db.String(16), nullable=False)  ###不能为空
     username = db.Column(db.String(32), nullable=False)  ###不能为空
     password = db.Column(db.String(64), nullable=False)  ###不能为空
     port = db.Column(db.String(8), nullable=False)
@@ -79,5 +79,5 @@ class bmc_ansible_hosts(db.Model):
     createtime = db.Column(db.DateTime(timezone=False), default=datetime.datetime.now())
 
     def to_dict(self):
-        return {"id": self.id, "host": self.host, "username": self.username, "password": self.password,
-                "port": self.port, "group": self.group,"createtime": str(self.cratetime)}
+        return {"id": self.id, "host": self.instanceip, "username": self.username, "password": self.password,
+                "port": self.port, "group": self.group,"createtime": str(self.createtime)}
