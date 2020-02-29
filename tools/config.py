@@ -10,8 +10,8 @@ class MysqlConfig(object):
     DIALECT = "mysql"
     DRIVER = "pymysql"
     USERNAME = "root"
-    PASSWORD = "123456"
-    HOST = "192.168.1.1"
+    PASSWORD = "chehejia@2020"
+    HOST = "192.168.58.1"
     PORT = "3306"
     DATABASE = "op_bmc"
     SQLALCHEMY_DATABASE_URI = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST,
