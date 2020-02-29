@@ -40,6 +40,18 @@ class bmclog(db.Model):
         return {"id": self.id, "descname": self.descname, "source": self.source,
                 "request": self.request, "response": self.response, "opsmethod": self.opsmethod, "run_time":
                     self.run_time}
+
+class ipwhilt(db.Model):  #######ip 白名单########
+    __tablename__ = 'bmc_ipwhilt'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ip = db.Column(db.String(24), nullable=True)
+    desc = db.Column(db.String(128), nullable=True)
+    owner = db.Column(db.String(64), nullable=True)
+    create_time = db.Column(db.DateTime(timezone=False), default=datetime.datetime.now())
+
+    def to_dict(self):
+        return {"id": self.id, "ip": self.ip, "desc": self.desc,
+                "owner": self.owner}
     
 class channel(db.Model):  ########认证code##########
     __tablename__ = 'bmc_channel'

@@ -193,7 +193,7 @@ def ansibleHostRun():
 def ansibleHostSelect():
     import json
     from models import bmchost
-     from tools.config import DynamicHostHeader
+    from tools.config import DynamicHostHeader
     queryData = bmchost.query.all()
     print(queryData)
     return Response(
