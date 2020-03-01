@@ -79,5 +79,5 @@ class bmc_ansible_hosts(db.Model):
     createtime = db.Column(db.DateTime(timezone=False), default=datetime.datetime.now())
 
     def to_dict(self):
-        return {"id": self.id, "host": self.instanceip, "username": self.username, "password": self.password,
+        return {"id": self.id, "instanceip": self.instanceip, "username": self.username, "password": self.password,
                 "port": self.port, "group": self.group,"createtime": str(self.createtime)}
