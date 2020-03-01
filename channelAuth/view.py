@@ -73,6 +73,7 @@ def anisbleAddUuidChannel(desc, owner, uuid_use, id=None):
 
 
 def anisbleSelectUuidChanne():
+    from flask_paginate import Pagination, get_page_parameter
     import json
     from models import channel
     from tools.config import ChanneUuidHeader,WhilteUuidField
@@ -80,10 +81,18 @@ def anisbleSelectUuidChanne():
         return Response(json.dumps({"code": 0, "data":WhilteUuidField}), mimetype="application/json")
     else:
         try:
-            queryData = channel.query.all()
-            return Response(json.dumps(
-                {"code": 0,"isAdmin":True, "data": [i.to_dict() for i in queryData], "columns": ChanneUuidHeader, "message": "success"}),
+            queryData = channel.query.all()             
+            pagesize = request.args.get('psize', 5, type=int)
+            page = request.args.get('page', 1, type=int)     
+            if page and pagesize:         
+               pagination = channel.query.order_by(channel.create_time.desc()).paginate(page, per_page=pagesize,                                                                                              error_out=False)
+               resultQueryData = pagination.items
+               return Response(json.dumps({"code": 0,"isAdmin":True,"total": len(queryData),"data": [i.to_dict() for i in  resultQueryData], "columns": ChanneUuidHeader, "message": "success"}),
                 mimetype='application/json')
+            else:
+               parameterInfo = "参数不足,请检查"
+               return Response(json.dumps({"code": 1, "data": parameterInfo}), mimetype='application/json') 
+                 
         except Exception as e:
             return Response(json.dumps({"code": 1, "data": str(e), "message": "failure"}), mimetype='application/json')
 
@@ -170,16 +179,23 @@ def anisbleAddIpChannel(ipadress, desc, owner, id=None):
 
 def ansibleSelectChannelIpRun():
     import json
+    from flask_paginate import Pagination, get_page_parameter
     from models import ipwhilt
     from tools.config import ChanneIpHeader, WhilteIpField
     if "opsAdminForm" in request.args:
         return Response(json.dumps({"code": 0, "data": WhilteIpField}), mimetype="application/json")
     else:
         try:
+            pagesize = request.args.get('psize', 5, type=int)
+            page = request.args.get('page', 1, type=int)
             queryData = ipwhilt.query.all()
-            return Response(json.dumps(
-                {"code": 0, "isAdmin":True, "data": [i.to_dict() for i in queryData], "columns": ChanneIpHeader, "message": "success"}),
-                mimetype='application/json')
+            if page and  pagesize:
+               pagination = ipwhilt.query.order_by(ipwhilt.create_time.desc()).paginate(page, per_page=pagesize, error_out=False) 
+               resultQueryData = pagination.items  
+               return Response(json.dumps({"code": 0, "isAdmin":True, "total": len(queryData),"data": [i.to_dict() for i in resultQueryData],"columns": ChanneIpHeader, "message": "success"}),mimetype='application/json')
+            else:
+               parameterInfo = "参数不足,请检查"
+               return Response(json.dumps({"code": 1, "data": parameterInfo}), mimetype='application/json')  
         except Exception as e:
             return Response(json.dumps({"code": 1, "data": str(e), "message": "failure"}), mimetype='application/json')
 

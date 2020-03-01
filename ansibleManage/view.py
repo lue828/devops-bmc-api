@@ -102,6 +102,12 @@ def ansibleModule():
     data = instanceModule.Ansible_env()
     return Response(data, mimetype='application/json')
 
+@ansibleUrl.route('/modelist/v1', methods=['GET', 'POST'])
+def ansibleModuleList():
+    envModule = ansibelBase()
+    data = envModule.Ansible_module()
+    return Response(data, mimetype='application/json')
+
 
 
 def ansibleInsert(ip, command, args, callback):
@@ -118,12 +124,20 @@ def ansibleInsert(ip, command, args, callback):
 
 
 def ansibleSelect():
+    from flask_paginate import Pagination, get_page_parameter
     import json
     from models import bmc_ansible
+    from tools.config import AdhistoryHeader
     queryData = bmc_ansible.query.all()
-    return Response(json.dumps({"code": 0, "total": len(queryData), "data": [i.to_dict() for i in queryData]}),
-                    mimetype='application/json')
-
+    pagesize = request.args.get('psize', 5, type=int)
+    page = request.args.get('page', 1, type=int)
+    if page and pagesize: 
+       pagination = bmc_ansible.query.order_by(bmc_ansible.create_time.desc()).paginate(page, per_page=pagesize,                                                                                              error_out=False)
+       resultQueryData = pagination.items
+       return Response(json.dumps({"code": 0, "total": len(queryData), "data": [i.to_dict() for i in resultQueryData],"columns":AdhistoryHeader}),mimetype='application/json')
+    else:
+        parameterInfo = "请输入分页参数,请检查"
+        return Response(json.dumps({"code": 1, "data": parameterInfo}), mimetype='application/json') 
 
 def ansibleCallbackFilter(callback):
     callbackData = dict()
@@ -151,12 +165,8 @@ def ansibleCallbackFilter_v2(callback):
 class ansibelBase(object):
     def Ansible_module(self):
         import json
-        Commands_list = ["shell", "command", "script", "telnet", "raw", "expect", "psexec"]
-        File_list = ["copy", "fetch", "find", "stat", "file", "synchronize", "patch"]
-        Pckaging_list = ["yum", "yum_repository ", "maven", "npm", "gem", "pip", "bundler"]
-        Service_list = ["service"]
-        return json.dumps({"code": 0, "data": dict(Command=Commands_list, File=File_list, Package=Pckaging_list,
-                                                   Service=Service_list)})
+        Commands_list = {"name":"shell", "lable":"command","tag":"service"}
+        return json.dumps({"code": 0, "data":Commands_list})
     def Ansible_env(self):
         import json
         key = ["dev","test","ontest","prod"]
@@ -191,14 +201,20 @@ def ansibleHostRun():
 2.数据库查询
 """
 def ansibleHostSelect():
+    from flask_paginate import Pagination, get_page_parameter
     import json
     from models import bmc_ansible_hosts
     from tools.config import DynamicHostHeader
     queryData = bmc_ansible_hosts.query.all()
-    print(queryData)
-    return Response(
-        json.dumps({"code": 0, "total": len(queryData), "data": [i.to_dict() for i in queryData],"columns":DynamicHostHeader,}, ),
-        mimetype='application/json')
+    pagesize = request.args.get('psize', 5, type=int)
+    page = request.args.get('page', 1, type=int)
+    if page and pagesize:
+       pagination = bmc_ansible_hosts.query.order_by(bmc_ansible_hosts.createtime.desc()).paginate(page, per_page=pagesize,error_out=False)
+       resultQueryData = pagination.items
+       return Response(json.dumps({"code": 0, "total": len(queryData), "data": [i.to_dict() for i in resultQueryData],"columns":DynamicHostHeader}),mimetype='application/json')
+    else:
+       parameterInfo = "参数错误,请检查"
+       return Response(json.dumps({"code": 1, "data": parameterInfo}), mimetype='application/json')
 """
 1.删除主机ip地址
 """

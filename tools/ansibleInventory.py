@@ -29,7 +29,7 @@ def getHostInventoryData(url):
         data[group]["hosts"] = list()
         for x in getdata:
             if x["group"] == group:
-               data[group]["hosts"].append(x["host"])
+               data[group]["hosts"].append(x["instanceip"])
     return json.dumps(data, indent=5)
 
 def HostApi():

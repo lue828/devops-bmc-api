@@ -23,7 +23,7 @@ class bmc_ansible(db.Model):
 
     def to_dict(self):
         return {"id": self.id, "run_ip": self.run_ip, "command_name": self.command_name, "run_agrs": self.run_agrs,
-                "ansible_callback": self.ansible_callback}
+                "ansible_callback": self.ansible_callback,"create_time":str(self.create_time)}
 
 
 class bmclog(db.Model):
@@ -51,7 +51,7 @@ class ipwhilt(db.Model):  #######ip 白名单########
 
     def to_dict(self):
         return {"id": self.id, "ip": self.ip, "desc": self.desc,
-                "owner": self.owner}
+                "owner": self.owner,"ctime":str(self.create_time)}
     
 class channel(db.Model):  ########认证code##########
     __tablename__ = 'bmc_channel'
@@ -64,7 +64,7 @@ class channel(db.Model):  ########认证code##########
 
     def to_dict(self):
         return {"id": self.id, "uuid": self.uuid, "desc": self.desc, "uuid_use": self.uuid_use,
-                "owner": self.owner}
+                "owner": self.owner,"ctime":str(self.create_time)}
 
     
 

@@ -8,6 +8,7 @@ Click==7.0
 cryptography==2.8
 Flask==1.0.2
 Flask-Cors==3.0.6
+flask-paginate==0.5.5
 Flask-RESTful==0.3.8
 Flask-SQLAlchemy==2.4.1
 get==2019.4.13

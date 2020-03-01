@@ -19,9 +19,9 @@ class MysqlConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
  ##########Ansible 认证授权UUID表头模板###############
-ChanneUuidHeader=[{"name": "id", "alias":"唯一标识"},{"name": "uuid","alias":"授权uuid"},{"name":"desc","alias":"备注说明"},{"name":"owner","alias":"使用方"}, {"name":"uuid_use","alias":"用途"}]
+ChanneUuidHeader=[{"name": "id", "alias":"唯一标识"},{"name": "uuid","alias":"授权uuid"},{"name":"desc","alias":"备注说明"},{"name":"owner","alias":"使用方"}, {"name":"uuid_use","alias":"用途"},{"name":"ctime","alias":"创建时间"}]
 
-ChanneIpHeader=[{"name": "id", "alias":"唯一标识"},{"name": "ip","alias":"授权IP地址"},{"name":"desc","alias":"备注说明"},{"name":"owner","alias":"使用方"}]
+ChanneIpHeader=[{"name": "id", "alias":"唯一标识"},{"name": "ip","alias":"授权IP地址"},{"name":"desc","alias":"备注说明"},{"name":"owner","alias":"使用方"},{"name":"ctime","alias":"创建时间"}]
 
 
 WhilteIpField = [
@@ -44,3 +44,10 @@ DynamicHostHeader=[
     {"name":"password","alias":"密码"},{"name":"username","alias":"用户"},
     {"name":"port","alias":"端口"},{"name":"group","alias":"主机组"},
     {"name":"createtime","alias":"创建时间"}]
+
+
+AdhistoryHeader = [
+  {"name":"run_ip","alias":"主机IP"},
+  {"name":"command_name","alias":"模块名称"},{"name":"run_agrs","alias":"命令参数"},
+  {"name":"ansible_callback","alias":"执行结果"}
+]
